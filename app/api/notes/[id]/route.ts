@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import type { Prisma } from '@prisma/client';
 import { createClient } from '@/lib/supabase/server';
 
 async function ensureUser() {
@@ -17,15 +18,20 @@ export async function PUT(
   if (!user)
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const body = await req.json();
-  const { title, content, categoryId } = body as {
+  const { title, content, category } = body as {
     title?: string;
     content?: string;
-    categoryId?: string | null;
+    category?: string | null; // category name string
   };
+
+  const updateData: Record<string, unknown> = {};
+  if (typeof title !== 'undefined') updateData.title = title;
+  if (typeof content !== 'undefined') updateData.content = content;
+  if (typeof category !== 'undefined') updateData.category = category;
 
   const note = await prisma.note.update({
     where: { id, userId: user.id },
-    data: { title, content, categoryId: categoryId ?? undefined },
+    data: updateData as Prisma.NoteUpdateInput,
   });
   return NextResponse.json(note);
 }
