@@ -7,6 +7,7 @@ type HealthResult = {
     NEXT_PUBLIC_SUPABASE_URL: boolean;
     NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY: boolean;
     DATABASE_URL: boolean;
+    DATABASE_URL_FORMAT: string;
     DIRECT_URL: boolean;
     NODE_ENV: string | undefined;
     hasEnvVars: boolean;
@@ -15,6 +16,9 @@ type HealthResult = {
 };
 
 export async function GET() {
+  const databaseUrl = process.env.DATABASE_URL || '';
+  const urlPrefix = databaseUrl.split('://')[0] || 'none';
+
   const result: HealthResult = {
     env: {
       NEXT_PUBLIC_SUPABASE_URL: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
@@ -22,6 +26,7 @@ export async function GET() {
         process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY
       ),
       DATABASE_URL: Boolean(process.env.DATABASE_URL),
+      DATABASE_URL_FORMAT: urlPrefix,
       DIRECT_URL: Boolean(process.env.DIRECT_URL),
       NODE_ENV: process.env.NODE_ENV,
       hasEnvVars: Boolean(hasEnvVars),
