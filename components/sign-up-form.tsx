@@ -48,7 +48,10 @@ export function SignUpForm({
         password,
         options: baseUrl
           ? {
-              emailRedirectTo: `${baseUrl}/`,
+              // After email confirmation, Supabase will redirect back here.
+              // Our /auth/confirm route will exchange the code for a session
+              // and then send the user to '/'.
+              emailRedirectTo: `${baseUrl}/auth/confirm`,
             }
           : undefined,
       });
