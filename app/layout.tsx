@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
-  : 'http://localhost:3000';
+  : 'http://localhost:30001';
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
