@@ -18,6 +18,9 @@ type HealthResult = {
 export async function GET() {
   const databaseUrl = process.env.DATABASE_URL || '';
   const urlPrefix = databaseUrl.split('://')[0] || 'none';
+  const hasValidPrefix =
+    databaseUrl.startsWith('postgresql://') ||
+    databaseUrl.startsWith('postgres://');
 
   const result: HealthResult = {
     env: {
@@ -26,14 +29,13 @@ export async function GET() {
         process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY
       ),
       DATABASE_URL: Boolean(process.env.DATABASE_URL),
-      DATABASE_URL_FORMAT: urlPrefix,
+      DATABASE_URL_FORMAT: `${urlPrefix} (valid: ${hasValidPrefix})`,
       DIRECT_URL: Boolean(process.env.DIRECT_URL),
       NODE_ENV: process.env.NODE_ENV,
       hasEnvVars: Boolean(hasEnvVars),
     },
     db: { ok: false },
   };
-
   try {
     // Lightweight connectivity check
     await prisma.$queryRaw`SELECT 1`;
